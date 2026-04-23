@@ -263,16 +263,15 @@ document.getElementById('wish-btn').addEventListener('click', (e) => {
     }, 400);
 });
 
-document.getElementById('close-modal-btn').addEventListener('click', () => {
-    document.getElementById('wish-modal').classList.add('hidden');
-});
-
-const celCloseBtn = document.getElementById('close-celebration-btn');
-if (celCloseBtn) {
-    celCloseBtn.addEventListener('click', () => {
+document.addEventListener('click', (e) => {
+    if (e.target.id === 'close-modal-btn') {
+        e.stopPropagation();
+        document.getElementById('wish-modal').classList.add('hidden');
+    } else if (e.target.id === 'close-celebration-btn') {
+        e.stopPropagation();
         document.getElementById('celebration-modal').classList.add('hidden');
-    });
-}
+    }
+});
 
 
 // === 6. FLOATING BALLOONS ===
