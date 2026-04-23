@@ -62,49 +62,111 @@ window.addEventListener('resize', () => { canvas.width = window.innerWidth; canv
 
 
 // === 2. COUNTDOWN TIMER ===
+let countdownInterval;
+
 function updateCountdown() {
     const now = new Date();
     let birthday = new Date(now.getFullYear(), 3, 24); // April 24th
 
-    // Check if today is the birthday (April 24th local time)
+    // Check if directly passed target and is the same day
     const isBirthday = now.getMonth() === 3 && now.getDate() === 24;
+
+    let diff = birthday - now;
+    let days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    let hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+    let minutes = Math.floor((diff / 1000 / 60) % 60);
+    let seconds = Math.floor((diff / 1000) % 60);
 
     const countdownContainer = document.getElementById('countdown');
     const bdayMessage = document.getElementById('birthday-message');
     const countdownTitle = document.getElementById('countdown-title');
 
-    if (isBirthday) {
+    if (isBirthday || (days <= 0 && hours <= 0 && minutes <= 0 && seconds <= 0)) {
+        clearInterval(countdownInterval);
+
         if (countdownContainer) countdownContainer.style.display = 'none';
         if (countdownTitle) countdownTitle.style.display = 'none';
-        if (bdayMessage) bdayMessage.classList.remove('hidden');
-
-        // Auto-fire confetti every 2 seconds if not already doing so
-        if (!window.celebrationStarted) {
-            window.celebrationStarted = true;
-            setInterval(() => {
-                shootConfetti(window.innerWidth / 2, window.innerHeight / 2, 80);
-            }, 2000);
+        if (bdayMessage) {
+            bdayMessage.classList.remove('hidden');
+            bdayMessage.querySelector('.celebration-text').innerText = "🎂 It's Your Birthday! 🎂";
         }
+
+        onBirthdayReached();
         return;
     } else {
-        if (countdownContainer) countdownContainer.style.display = 'flex';
-        if (countdownTitle) countdownTitle.style.display = 'block';
-        if (bdayMessage) bdayMessage.classList.add('hidden');
-
         if (now > birthday) {
             birthday = new Date(now.getFullYear() + 1, 3, 24); // Move to next year
+            diff = birthday - now;
+            days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+            minutes = Math.floor((diff / 1000 / 60) % 60);
+            seconds = Math.floor((diff / 1000) % 60);
         }
     }
 
-    const diff = birthday - now;
-    if (diff <= 0) return; // Fallback edge case
-
-    document.getElementById('days').innerText = String(Math.floor(diff / (1000 * 60 * 60 * 24))).padStart(2, '0');
-    document.getElementById('hours').innerText = String(Math.floor((diff / (1000 * 60 * 60)) % 24)).padStart(2, '0');
-    document.getElementById('minutes').innerText = String(Math.floor((diff / 1000 / 60) % 60)).padStart(2, '0');
-    document.getElementById('seconds').innerText = String(Math.floor((diff / 1000) % 60)).padStart(2, '0');
+    document.getElementById('days').innerText = String(days).padStart(2, '0');
+    document.getElementById('hours').innerText = String(hours).padStart(2, '0');
+    document.getElementById('minutes').innerText = String(minutes).padStart(2, '0');
+    document.getElementById('seconds').innerText = String(seconds).padStart(2, '0');
 }
-setInterval(updateCountdown, 1000);
+
+function onBirthdayReached() {
+    // Prevent multiple executions
+    if (window.celebrationStarted) return;
+    window.celebrationStarted = true;
+
+    // 3. Auto-launch confetti cannon for 5 seconds
+    const confettiInterval = setInterval(() => {
+        shootConfetti(window.innerWidth / 2, window.innerHeight / 2, 40);
+    }, 200);
+    setTimeout(() => clearInterval(confettiInterval), 5000);
+
+    // 4. Show birthday popup modal
+    setTimeout(() => {
+        const celModal = document.getElementById('celebration-modal');
+        if (celModal) celModal.classList.remove('hidden');
+    }, 1500);
+
+    // 5. Play music (if not playing)
+    if (bgMusic && bgMusic.paused) {
+        bgMusic.play().then(() => {
+            if (musicToggle) {
+                musicToggle.textContent = '♫';
+                musicToggle.classList.add('playing');
+            }
+            isMusicPlaying = true;
+        }).catch(err => console.log('Autoplay blocked:', err));
+    }
+
+    // 6. Make all heart balloons speed up briefly (CSS class 'celebrate')
+    const balloons = document.querySelectorAll('.balloon');
+    balloons.forEach(b => b.classList.add('celebrate'));
+    // Remove class after 3 seconds
+    setTimeout(() => {
+        const updatedBalloons = document.querySelectorAll('.balloon');
+        updatedBalloons.forEach(b => b.classList.remove('celebrate'));
+    }, 3000);
+
+    // 7. Sparkle burst around the main heading for 3 seconds
+    const heading = document.querySelector('.elegant-heading');
+    if (heading) {
+        const rect = heading.getBoundingClientRect();
+        const sparklesC = document.getElementById('sparkles-container');
+        for (let i = 0; i < 40; i++) {
+            const span = document.createElement('span');
+            span.className = 'sparkle';
+            // Centered around heading x/y randomly
+            span.style.left = (rect.left + rect.width / 2 + (Math.random() * 200 - 100)) + 'px';
+            span.style.top = (rect.top + rect.height / 2 + (Math.random() * 100 - 50)) + 'px';
+            span.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+            span.style.animationDuration = '3s'; // Longer sparkle for heading
+            sparklesC.appendChild(span);
+            setTimeout(() => span.remove(), 3000);
+        }
+    }
+}
+
+countdownInterval = setInterval(updateCountdown, 1000);
 updateCountdown();
 
 
@@ -204,6 +266,13 @@ document.getElementById('wish-btn').addEventListener('click', (e) => {
 document.getElementById('close-modal-btn').addEventListener('click', () => {
     document.getElementById('wish-modal').classList.add('hidden');
 });
+
+const celCloseBtn = document.getElementById('close-celebration-btn');
+if (celCloseBtn) {
+    celCloseBtn.addEventListener('click', () => {
+        document.getElementById('celebration-modal').classList.add('hidden');
+    });
+}
 
 
 // === 6. FLOATING BALLOONS ===

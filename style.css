@@ -371,6 +371,11 @@ body {
   /* Shadows applied to main element for soft hover logic */
 }
 
+/* Speedy Balloons for Celebration */
+.balloon.celebrate {
+  animation-duration: 2s !important;
+}
+
 /* Create the heart lobes using pseudo-elements */
 .balloon::before,
 .balloon::after {
