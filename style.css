@@ -393,32 +393,44 @@ body {
 }
 
 /* Floating Music Toggle */
-.floating-btn {
+#musicToggle {
   position: fixed;
-  bottom: 30px;
-  right: 30px;
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  background: var(--accent-hotpink);
+  bottom: 24px;
+  right: 24px;
+  z-index: 9999;
+  background: #E91E63;
   color: white;
   border: none;
-  font-size: 1.5rem;
+  border-radius: 50%;
+  width: 52px;
+  height: 52px;
+  font-size: 1.4rem;
   cursor: pointer;
-  box-shadow: 0 4px 15px rgba(233, 30, 140, 0.4);
-  z-index: 1000;
-  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(233, 30, 99, 0.4);
+  transition: transform 0.2s ease;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.floating-btn:hover {
+#musicToggle:hover {
   transform: scale(1.1);
 }
 
-.floating-btn.playing {
-  animation: floatPulse 2s infinite ease-in-out;
+#musicToggle.playing {
+  animation: pulse 1.2s infinite;
+}
+
+@keyframes pulse {
+
+  0%,
+  100% {
+    box-shadow: 0 4px 15px rgba(233, 30, 99, 0.4);
+  }
+
+  50% {
+    box-shadow: 0 4px 30px rgba(233, 30, 99, 0.9);
+  }
 }
 
 /* Sparkle Effects */
@@ -496,7 +508,7 @@ body {
     max-width: 300px;
   }
 
-  .floating-btn {
+  #musicToggle {
     bottom: 20px;
     right: 20px;
     width: 50px;

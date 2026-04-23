@@ -123,30 +123,37 @@ setTimeout(typeWriter, 1000);
 
 
 // === 4. BACKGROUND AUDIO & POP SOUND ===
-const bgMusic = document.getElementById('bgMusic');
-const musicToggle = document.getElementById('floating-music-toggle');
-let isMusicPlaying = false;
-
-function toggleMusic() {
-    if (isMusicPlaying) {
-        bgMusic.pause();
-        musicToggle.classList.remove('playing');
-        musicToggle.innerText = '🎵';
-    } else {
-        bgMusic.play().catch(e => console.log("Audio play blocked", e));
-        musicToggle.classList.add('playing');
-        musicToggle.innerText = '♫';
-    }
-    isMusicPlaying = !isMusicPlaying;
+let bgMusic = document.getElementById('bgMusic');
+if (!bgMusic) {
+    bgMusic = document.createElement('audio');
+    bgMusic.id = 'bgMusic';
+    bgMusic.src = 'WhatsApp Audio 2026-04-23 at 23.28.06.mpeg'; // Fixed filename
+    bgMusic.loop = true;
+    document.body.appendChild(bgMusic);
 }
 
-musicToggle.addEventListener('click', toggleMusic);
+const musicBtn = document.getElementById('musicToggle');
 
-document.body.addEventListener('click', function autoPlayOnce() {
-    if (!isMusicPlaying) {
-        toggleMusic();
+musicBtn.addEventListener('click', function (e) {
+    e.stopPropagation(); // Prevent trigger competition
+    console.log('Music button clicked, paused:', bgMusic.paused);
+    if (bgMusic.paused) {
+        bgMusic.play().catch(e => console.log('Play error:', e));
+        musicBtn.textContent = '♫';
+        musicBtn.classList.add('playing');
+    } else {
+        bgMusic.pause();
+        musicBtn.textContent = '♪';
+        musicBtn.classList.remove('playing');
     }
-    document.body.removeEventListener('click', autoPlayOnce);
+});
+
+document.body.addEventListener('click', function startMusic() {
+    bgMusic.play().then(() => {
+        musicBtn.textContent = '♫';
+        musicBtn.classList.add('playing');
+    }).catch(e => console.log('Autoplay error:', e));
+    document.body.removeEventListener('click', startMusic);
 }, { once: true });
 
 function playPop() {
