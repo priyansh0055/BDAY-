@@ -74,17 +74,19 @@
         </div>
 
         <!-- Celebration Popup Modal -->
-        <div id="celebration-modal" class="modal hidden">
+        <div id="birthdayModal">
             <div class="modal-content glass-panel">
+                <button id="closeModal" class="close-btn">✕</button>
                 <h2>🎉 Happy Birthday ANGEL!<br><span
                         style="font-size: 1.5rem; font-style: italic; color: #E91E8C;">Wishing you the most magical day
                         ever! 💕</span></h2>
-                <button id="close-celebration-btn" class="glow-btn">Close</button>
             </div>
         </div>
     </main>
 
-    <audio id="bgMusic" src="WhatsApp Audio 2026-04-23 at 23.28.06.mpeg" loop preload="auto"></audio>
+    <audio id="bgMusic" loop preload="auto">
+        <source src="WhatsApp Audio 2026-04-23 at 23.28.06.mpeg" type="audio/mpeg">
+    </audio>
     <button id="musicToggle">♪</button>
 
     <script src="script.js"></script>

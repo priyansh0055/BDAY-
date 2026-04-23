@@ -123,8 +123,14 @@ function onBirthdayReached() {
 
     // 4. Show birthday popup modal
     setTimeout(() => {
-        const celModal = document.getElementById('celebration-modal');
-        if (celModal) celModal.classList.remove('hidden');
+        const modal = document.getElementById('birthdayModal');
+        if (modal) {
+            modal.style.display = 'flex';
+            setTimeout(() => {
+                modal.style.opacity = '1';
+                modal.style.transform = 'scale(1)';
+            }, 10);
+        }
     }, 1500);
 
     // 5. Play music (if not playing)
@@ -185,38 +191,7 @@ setTimeout(typeWriter, 1000);
 
 
 // === 4. BACKGROUND AUDIO & POP SOUND ===
-let bgMusic = document.getElementById('bgMusic');
-if (!bgMusic) {
-    bgMusic = document.createElement('audio');
-    bgMusic.id = 'bgMusic';
-    bgMusic.src = 'WhatsApp Audio 2026-04-23 at 23.28.06.mpeg'; // Fixed filename
-    bgMusic.loop = true;
-    document.body.appendChild(bgMusic);
-}
-
-const musicBtn = document.getElementById('musicToggle');
-
-musicBtn.addEventListener('click', function (e) {
-    e.stopPropagation(); // Prevent trigger competition
-    console.log('Music button clicked, paused:', bgMusic.paused);
-    if (bgMusic.paused) {
-        bgMusic.play().catch(e => console.log('Play error:', e));
-        musicBtn.textContent = '♫';
-        musicBtn.classList.add('playing');
-    } else {
-        bgMusic.pause();
-        musicBtn.textContent = '♪';
-        musicBtn.classList.remove('playing');
-    }
-});
-
-document.body.addEventListener('click', function startMusic() {
-    bgMusic.play().then(() => {
-        musicBtn.textContent = '♫';
-        musicBtn.classList.add('playing');
-    }).catch(e => console.log('Autoplay error:', e));
-    document.body.removeEventListener('click', startMusic);
-}, { once: true });
+// Removed un-wrapped music DOM handlers
 
 function playPop() {
     const AudioContextFn = window.AudioContext || window.webkitAudioContext;
@@ -267,9 +242,102 @@ document.addEventListener('click', (e) => {
     if (e.target.id === 'close-modal-btn') {
         e.stopPropagation();
         document.getElementById('wish-modal').classList.add('hidden');
-    } else if (e.target.id === 'close-celebration-btn') {
-        e.stopPropagation();
-        document.getElementById('celebration-modal').classList.add('hidden');
+    }
+});
+
+document.addEventListener('DOMContentLoaded', function () {
+
+    const modal = document.getElementById('birthdayModal');
+    const closeBtn = document.querySelector('.close-btn')
+        || document.querySelector('[data-close]')
+        || document.getElementById('closeModal')
+        || document.querySelector('.modal ✕')
+        || document.querySelector('button[aria-label="close"]');
+
+    // Try selecting by text content if ID fails
+    const allButtons = document.querySelectorAll('button');
+    let closeBtnFinal = closeBtn;
+    allButtons.forEach(btn => {
+        if (btn.textContent.trim() === '×' ||
+            btn.textContent.trim() === '✕' ||
+            btn.textContent.trim() === 'X' ||
+            btn.innerHTML.includes('×')) {
+            closeBtnFinal = btn;
+        }
+    });
+
+    if (closeBtnFinal) {
+        closeBtnFinal.addEventListener('click', function (e) {
+            e.stopPropagation();
+            if (modal) {
+                modal.style.transition = 'opacity 0.3s ease';
+                modal.style.opacity = '0';
+                setTimeout(() => {
+                    modal.style.display = 'none';
+                    modal.style.opacity = '1';
+                }, 300);
+            }
+        });
+    }
+
+    // Also close when clicking dark overlay behind modal
+    if (modal) {
+        modal.addEventListener('click', function (e) {
+            if (e.target === modal) {
+                modal.style.opacity = '0';
+                setTimeout(() => {
+                    modal.style.display = 'none';
+                    modal.style.opacity = '1';
+                }, 300);
+            }
+        });
+    }
+
+    // Close on Escape key
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && modal) {
+            modal.style.opacity = '0';
+            setTimeout(() => {
+                modal.style.display = 'none';
+                modal.style.opacity = '1';
+            }, 300);
+        }
+    });
+
+    // Find audio element or create it
+    let bgMusic = document.getElementById('bgMusic');
+    if (!bgMusic) {
+        bgMusic = document.createElement('audio');
+        bgMusic.id = 'bgMusic';
+        bgMusic.loop = true;
+        bgMusic.src = 'WhatsApp Audio 2026-04-23 at 23.28.06.mpeg'; // Fixed filename
+        document.body.appendChild(bgMusic);
+    }
+
+    // Find music button by trying multiple selectors
+    const musicBtn = document.getElementById('musicToggle')
+        || document.querySelector('.music-btn')
+        || document.querySelector('.music-toggle')
+        || document.querySelector('[aria-label="music"]');
+
+    if (musicBtn) {
+        musicBtn.addEventListener('click', function (e) {
+            e.stopPropagation();
+            if (bgMusic.paused) {
+                bgMusic.play()
+                    .then(() => {
+                        musicBtn.textContent = '♫';
+                        musicBtn.classList.add('playing');
+                    })
+                    .catch(err => {
+                        console.error('Audio play failed:', err);
+                    });
+            } else {
+                bgMusic.pause();
+                musicBtn.textContent = '♪';
+                musicBtn.classList.remove('playing');
+            }
+        });
     }
 });
 
