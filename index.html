@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday ANGEL!</title>
+    <!-- Google Fonts: Great Vibes for headings, Outfit for body text -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <!-- Background Elements -->
+    <div id="stars-background"></div>
+    <canvas id="confetti-canvas"></canvas>
+    <div id="balloons-container"></div>
+    <div id="sparkles-container"></div>
+
+    <!-- Main Content -->
+    <main class="content-wrapper">
+        <header class="hero">
+            <h1 class="elegant-heading">Happy Birthday,<br>ANGEL!</h1>
+            <div class="elegant-divider"></div>
+            <p id="typing-text" class="typing-message"></p>
+        </header>
+
+        <!-- Dynamic Message Card -->
+        <section class="message-card">
+            <div class="card-inner">
+                <h2>Wishing you the best year yet!</h2>
+                <p>May your day be filled with joy, laughter, and everything you absolutely love. You deserve the best
+                    and so much more! Let's celebrate! 🎂✨</p>
+            </div>
+        </section>
+
+        <!-- Countdown Timer -->
+        <section class="countdown-section" id="countdown-section">
+            <h3 id="countdown-title">Birthday Countdown</h3>
+            <div id="countdown" class="timer-container">
+                <div class="time-box"><span id="days">00</span>
+                    <p>Days</p>
+                </div>
+                <div class="time-box"><span id="hours">00</span>
+                    <p>Hours</p>
+                </div>
+                <div class="time-box"><span id="minutes">00</span>
+                    <p>Mins</p>
+                </div>
+                <div class="time-box"><span id="seconds">00</span>
+                    <p>Secs</p>
+                </div>
+            </div>
+            <div id="birthday-message" class="hidden">
+                <h2 class="celebration-text">🎂 Today is Your Special Day! 🎂</h2>
+            </div>
+        </section>
+
+        <!-- Interactive Controls -->
+        <section class="controls">
+            <button id="wish-btn" class="glow-btn outline">Make a Wish ✨</button>
+        </section>
+
+        <!-- Birthday Popup Modal -->
+        <div id="wish-modal" class="modal hidden">
+            <div class="modal-content glass-panel">
+                <h2>A wish sent to the stars! ✨🌟</h2>
+                <button id="close-modal-btn" class="glow-btn">Close</button>
+            </div>
+        </div>
+    </main>
+
+    <audio id="bgMusic" src="WhatsApp_Audio_2026-04-23_at_23_28_06.mpeg" loop preload="auto"></audio>
+    <button id="floating-music-toggle" class="floating-btn">🎵</button>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
